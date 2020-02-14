@@ -1,5 +1,4 @@
 
-# library(ggplot2)
 anomaly_plot <- function( x,
                           y,
                           scores = NULL,

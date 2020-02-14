@@ -1,11 +1,22 @@
 Package: IsolationForest
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Isolation Forest Variants 
 Encoding: UTF-8
-LazyData: true
+Version: 0.5.1
+Date: 2020-2-14
+Authors@R: 
+    person(given = "Juraj",
+           family = "Szitas",
+           role = c("aut", "cre"),
+           email = "szitas.juraj13@gmail.com")
+BugReports: https://github.com/JSzitas/categoryEncodings/issues          
+Description: An R implementation of Isolation Forest, Extended 
+    Isolation Forest and possible experimentation, with optional
+    parallelization using the future backend. 
+License: GPL-3
+RoxygenNote: 6.1.1
+Suggests: 
+    testthat (>= 2.1.0),
+    covr
+URL: https://github.com/JSzitas/IsolationForests 
+Imports: 
