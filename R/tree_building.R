@@ -49,7 +49,6 @@ split <- function( X,
 }
 
 
-
 recurse <- function( index_data,
                      current_depth,
                      max_depth,
@@ -137,16 +136,18 @@ iTree <- function( X,
   }
   env$X <- X
 
-  recurse( index_data = 1:nrow(X),
-           current_depth = 0,
-           max_depth = max_tree_depth,
-           node_index = 1,
-           envir = env,
-           ext_level = extension_level,
-           vanilla )
+    recurse( index_data = 1:nrow(X),
+             current_depth = 0,
+             max_depth = max_tree_depth,
+             node_index = 1,
+             envir = env,
+             ext_level = extension_level,
+             vanilla )
 
   return( list(env$mat,
                env$normal_intercept_mat))
 }
+
+
 
 
