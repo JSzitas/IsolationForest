@@ -86,6 +86,14 @@ predict.isolationForest <- function(object, newdata )
                "columns, but original training data had",
                object$n_variables, "columns" ))
   }
+  if(sum(unlist(is.na(newdata))) != 0){
+    newdata[is.na(newdata)] <- sample(c(-1e9,1e9),1)
+  }
+  if(object$parallel == TRUE){
+    future::plan( object$future_plan )
+    on.exit(future::plan("default"), add = TRUE)
+  }
+
   # parallel tree prediction
   if( object$vanilla ){
     # vanilla

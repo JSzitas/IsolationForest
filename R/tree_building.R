@@ -9,30 +9,30 @@ split <- function( X,
     normal_vector <- rep(0, ncol(X))
     intercept_points <- rep(0, ncol(X))
     var_sample <- sample(1:ncol(X), 1)
-
-    min_split <- min(unlist(X[,var_sample]))
-    max_split <- max(unlist(X[,var_sample]))
+    min_split <- min( unlist(X[,var_sample]))
+    max_split <- max( unlist(X[,var_sample]))
 
     vanilla_comparison <- runif(1, min_split, max_split)
 
     vanilla_sample <- c( var_sample, vanilla_comparison )
 
     res <- unlist(X[,var_sample]) - vanilla_comparison
-    return(list( filter = which( res < 0 ),
+
+    return(list( filter = which( res < 0),
                  vanilla_fitted = vanilla_sample ))
   }
   else{
     # split performs splits on a variable
     # this find the lower and upper bounds for the values in columns of X
     mins <- unlist( lapply(1:ncol(X), function(i){
-      min(unlist(X[,i]))
+      min( unlist(X[,i]) )
     }))
     maxes <- unlist( lapply(1:ncol(X), function(i){
-      max(unlist(X[,i]))
+      max( unlist(X[,i]) )
     }))
 
     index <- sample(1:ncol(X), (ncol(X) - ext_level - 1), replace = FALSE)
-    # Pick the indices for which the normal vector elements
+    # Pick the indices for the normal vector elements
     normal_vector <- rnorm(ncol(X), mean = 0, sd = 1)
     normal_vector[index] <- 0
     # use indexes to pick the dimensions on which to use this
@@ -58,7 +58,7 @@ recurse <- function( index_data,
                      vanilla )
 {
   ## don't sample columns with all duplicates
-  duplicates <- sapply( envir$X[ index_data, , drop = F ],
+  duplicates <- sapply( envir$X[ index_data, , drop = FALSE ],
                         function(x){
                           all(duplicated(x)[-1L])
                         })
@@ -73,9 +73,15 @@ recurse <- function( index_data,
     return()
   }
 
+  # random MIA recoding >>
+  # this randomly chooses the split to which the NA values will go
+  MIA_direction <- sample(c(-1e9,1e9),1)
+  MIA_data <- envir$X[index_data,]
+  MIA_data[is.na(envir$X[index_data,])] <- MIA_direction
+
   # perform splitting, using the current indexing of the data, and the correct
   # extension level
-  res <- split( as.matrix( envir$X[index_data,] ),
+  res <- split( as.matrix( MIA_data),
                 ext_level, vanilla )
 
   # modify matrix in place

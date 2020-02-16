@@ -6,7 +6,9 @@ isolationForest <- function( X,
                              Phi = 256,
                              seed = 1071,
                              vanilla = FALSE,
-                             encode_categories = TRUE )
+                             encode_categories = FALSE,
+                             parallel = TRUE,
+                             future_plan = "multiprocess" )
 {
   set.seed(seed)
 
@@ -16,6 +18,10 @@ isolationForest <- function( X,
   if(encode_categories){
     X <- data.frame(categoryEncodings::encode_categories( X ))
   }
+  if(parallel == TRUE){
+    future::plan(future_parallel)
+    on.exit(future::plan("default"), add = TRUE)
+  }
 
   forest = vector("list", n_trees)
 
@@ -23,14 +29,15 @@ isolationForest <- function( X,
     iTree(X[sample(1:nrow(X),Phi),], max_depth, extension_level, vanilla )
   }, future.seed = TRUE )
 
-
   isolation_forest_object <- list( forest = forest,
                                    Phi    = Phi,
                                    max_depth = max_depth,
                                    extension_level = extension_level,
                                    n_trees = n_trees,
                                    n_variables  = ncol(X),
-                                   vanilla = vanilla )
+                                   vanilla = vanilla,
+                                   parallel = parallel,
+                                   future_plan = future_plan )
   class(isolation_forest_object) <- "Isolation Forest"
   return( isolation_forest_object )
 }

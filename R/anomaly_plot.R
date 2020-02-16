@@ -8,10 +8,11 @@ anomaly_plot <- function( x,
                           x.max = NULL,
                           y.min = NULL,
                           y.max = NULL,
-                          point_plot = TRUE,
+                          contour = FALSE,
+                          palette_contour = NULL,
                           contamination = 0.05 )
 {
-  if(point_plot){
+  if(contour == FALSE ){
     if(is.null(data)){
       data <- cbind(x,y)
     }
@@ -19,7 +20,7 @@ anomaly_plot <- function( x,
       scores <- predict.isolationForest(forest, data)
     }
 
-      Anomalies <- as.factor(scores > quantile(scores,(1-contamination)))
+      Anomalies <- as.factor(scores > quantile(scores,(1-contamination), na.rm = TRUE))
       levels(Anomalies) <- c("Normal","Anomaly")
 
 
@@ -59,16 +60,16 @@ anomaly_plot <- function( x,
       }
 
       if(is.null(x.min)){
-        x.min <- min(unlist(x))
+        x.min <- min(unlist(x), na.rm = TRUE)
       }
       if(is.null(y.min)){
-        y.min <- min(unlist(y))
+        y.min <- min(unlist(y), na.rm = TRUE)
       }
       if(is.null(x.max)){
-        x.max <- max(unlist(x))
+        x.max <- max(unlist(x), na.rm = TRUE)
       }
       if(is.null(y.max)){
-        y.max <- max(unlist(y))
+        y.max <- max(unlist(y), na.rm = TRUE)
       }
 
       # get column means for later
@@ -82,22 +83,25 @@ anomaly_plot <- function( x,
 
       data <- data.frame( new_grid, means)
       colnames(data) <- var_names
-      # predict
+      # predict scores for the grid of data
       scored <- predict.isolationForest(forest, data)
 
       data_fm <- data.frame( cbind( data, scored))
       colnames(data_fm) <- c("x","y","scores")
 
+      if(is.null(palette_contour)){
+        palette_contour <- c( "#F5793A","#A95AA1","#85C0F9","#0F2080")
+      }
+
       ggplot2::ggplot(data_fm, ggplot2::aes( x = x, y = y, z = scores)) +
         ggplot2::geom_raster(ggplot2::aes(fill = scores), interpolate = TRUE) +
         ggplot2::guides(fill = ggplot2::guide_colorbar(title = "Anomaly Score")) +
-        ggplot2::scale_fill_gradientn(colours= c( "#F5793A","#A95AA1","#85C0F9","#0F2080")) +
+        ggplot2::scale_fill_gradientn(colours = palette_contour) +
         ggplot2::xlab("X") +
         ggplot2::ylab("Y") +
         ggplot2::theme(
           axis.title.y = ggplot2::element_text( angle = 0, vjust = 0.5, size = 12),
           axis.title.x = ggplot2::element_text( size = 12) )
-      #  c("#56B4E9","#0072B2","#E69F00", "#D55E00")
 
   }
 }
