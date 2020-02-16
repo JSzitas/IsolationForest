@@ -7,6 +7,8 @@ isolationForest <- function( X,
                              seed = 1071,
                              vanilla = FALSE,
                              encode_categories = FALSE,
+                             categorical_variables = NULL,
+                             category_encodings_methods = NULL,
                              parallel = TRUE,
                              future_plan = "multiprocess" )
 {
@@ -16,10 +18,12 @@ isolationForest <- function( X,
     max_depth <- ceiling( log2( Phi ) )
   }
   if(encode_categories){
-    X <- data.frame(categoryEncodings::encode_categories( X ))
+    X <- data.frame(categoryEncodings::encode_categories( X,
+                                                          fact = categorical_variables,
+                                                          method = category_encodings_methods ))
   }
   if(parallel == TRUE){
-    future::plan(future_parallel)
+    future::plan(future_plan)
     on.exit(future::plan("default"), add = TRUE)
   }
 

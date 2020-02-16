@@ -75,9 +75,14 @@ recurse <- function( index_data,
 
   # random MIA recoding >>
   # this randomly chooses the split to which the NA values will go
-  MIA_direction <- sample(c(-1e9,1e9),1)
-  MIA_data <- envir$X[index_data,]
-  MIA_data[is.na(envir$X[index_data,])] <- MIA_direction
+  if(sum(unlist(is.na(envir$X[index_data,]))) != 0){
+    MIA_direction <- sample(c(-1e9,1e9),1)
+    MIA_data <- envir$X[index_data,]
+    MIA_data[is.na(envir$X[index_data,])] <- MIA_direction
+  }
+  else{
+    MIA_data <- envir$X[index_data,]
+  }
 
   # perform splitting, using the current indexing of the data, and the correct
   # extension level

@@ -12,6 +12,17 @@ anomaly_plot <- function( x,
                           palette_contour = NULL,
                           contamination = 0.05 )
 {
+  if(is.character(x)){
+    x_index <- grep( pattern = x, x = colnames(data) )
+    x <- data[,which( x == colnames(data))]
+  }
+
+  if(is.character(y)){
+    y_index <- grep( pattern = y, x = colnames(data) )
+    y <- data[,which( y == colnames(data))]
+  }
+
+
   if(contour == FALSE ){
     if(is.null(data)){
       data <- cbind(x,y)
@@ -23,6 +34,8 @@ anomaly_plot <- function( x,
       Anomalies <- as.factor(scores > quantile(scores,(1-contamination), na.rm = TRUE))
       levels(Anomalies) <- c("Normal","Anomaly")
 
+      data <- data.frame(x,y)
+      colnames(data) <- c("x","y")
 
       data_fm <- data.frame( cbind( data,
                                     Anomalies))
@@ -44,19 +57,12 @@ anomaly_plot <- function( x,
   # contour
       if(is.character(x)){
         x_index <- grep( pattern = x, x = colnames(data) )
-        x <- data$x
+        x <- data[,which( x == colnames(data))]
       }
-      else{
-        x_index <- x
-        x <- data[, x]
-      }
+
       if(is.character(y)){
         y_index <- grep( pattern = y, x = colnames(data) )
-        y <- data$y
-      }
-      else{
-        y_index <- y
-        y <- data[, y]
+        y <- data[,which( y == colnames(data))]
       }
 
       if(is.null(x.min)){
@@ -71,6 +77,11 @@ anomaly_plot <- function( x,
       if(is.null(y.max)){
         y.max <- max(unlist(y), na.rm = TRUE)
       }
+    if(is.null(data)){
+      data <- data.frame(cbind(x,y))
+      x_index <- 1
+      y_index <- 2
+    }
 
       # get column means for later
       means <- t(colMeans(data[,-c( x_index, y_index )]))

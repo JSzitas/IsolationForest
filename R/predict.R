@@ -65,6 +65,11 @@ path_length_vanilla <- function(X, Tree, current_depth = 0, node_index = 1)
 #'
 #' @param object A fitted object of class "Isolation Forest"
 #' @param newdata Data to use for the prediction.
+#' @param knn_smoothed Whether to use k-nearest neighbor (knn) smoothing
+#' on the final predictions, defaults to **FALSE**.
+#' @param knn_k Number of clusters to use for knn smoothing.
+#' @param knn_method Method to use for knn smoothing - "average"/"median"
+#' @param knn_distance Distance to use for knn smoothing "euclidean"/"manhattan".
 #'
 #' @return A vector of anomaly scores for **newdata** fitted from the trees in **object**.
 #' @export
@@ -73,7 +78,12 @@ path_length_vanilla <- function(X, Tree, current_depth = 0, node_index = 1)
 #'
 #'
 
-predict.isolationForest <- function(object, newdata )
+predict.isolationForest <- function( object,
+                                     newdata,
+                                     knn_smoothed = FALSE,
+                                     knn_k = 5,
+                                     knn_method = "average",
+                                     knn_distance = "euclidean" )
 {
   # check is object is of class Isolation Forest
   if(class(object) != "Isolation Forest"){
@@ -109,6 +119,15 @@ predict.isolationForest <- function(object, newdata )
     })
   }
   res <- 2^(-rowMeans(paths)/cn(object$Phi))
+  if( knn_smoothed ){
+    res <- Rfast::knn( xnew = as.matrix(newdata),
+                       y = res,
+                       x = as.matrix(newdata),
+                       dist.type = knn_distance,
+                       type = "R",
+                       k = knn_k,
+                       method = knn_method )
+  }
   return(res)
 }
 
