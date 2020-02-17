@@ -8,11 +8,11 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
-status](https://travis-ci.org/JSzitas/IsolationForests.svg?branch=master)](https://travis-ci.org/JSzitas/IsolationForests)
+status](https://travis-ci.org/JSzitas/IsolationForest.svg?branch=master)](https://travis-ci.org/JSzitas/IsolationForest)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/JSzitas/IsolationForests?branch=master&svg=true)](https://ci.appveyor.com/project/JSzitas/IsolationForests)
+status](https://ci.appveyor.com/api/projects/status/github/JSzitas/IsolationForest?branch=master&svg=true)](https://ci.appveyor.com/project/JSzitas/IsolationForest)
 [![Codecov test
-coverage](https://codecov.io/gh/JSzitas/IsolationForests/branch/master/graph/badge.svg)](https://codecov.io/gh/JSzitas/IsolationForests?branch=master)
+coverage](https://codecov.io/gh/JSzitas/IsolationForest/branch/master/graph/badge.svg)](https://codecov.io/gh/JSzitas/IsolationForest?branch=master)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/IsolationForest)](https://CRAN.R-project.org/package=IsolationForest)
 <!-- badges: end -->
