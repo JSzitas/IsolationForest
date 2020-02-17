@@ -10,6 +10,7 @@ anomaly_plot <- function( x,
                           y.max = NULL,
                           contour = FALSE,
                           palette_contour = NULL,
+                          # spectral c( "#E6F598", "#FDAE61", "#F46D43", "#9E0142" )
                           contamination = 0.05 )
 {
   if(is.character(x)){

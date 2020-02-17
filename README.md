@@ -99,7 +99,7 @@ library(IsolationForest)
 
 fit <- isolationForest( X = test_data[,1:2], # we dont want column 3 here. 
                         n_trees = 1000,
-                        Phi = 62, # subsampling rate for individual trees
+                        Phi = 64, # subsampling rate for individual trees
                         parallel = TRUE, # defaults to future::plan("multiprocess")
                         future_plan = "multiprocess", # change this argument 
                                                       # to change the plan 

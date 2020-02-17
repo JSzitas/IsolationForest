@@ -118,7 +118,7 @@ predict.isolationForest <- function( object,
       path_length(as.matrix(newdata), i)
     })
   }
-  res <- 2^(-rowMeans(paths)/cn(object$Phi))
+  res <- 2^(-rowMeans(paths)/c_factor(object$Phi))
   if( knn_smoothed ){
     res <- Rfast::knn( xnew = as.matrix(newdata),
                        y = res,

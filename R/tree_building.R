@@ -159,6 +159,19 @@ iTree <- function( X,
                env$normal_intercept_mat))
 }
 
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
 
+max_nodes <- function( max_tree_depth )
+{
+  return( 2*( 2^max_tree_depth ) - 1)
+}
 
 
