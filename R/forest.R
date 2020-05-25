@@ -6,6 +6,8 @@ isolationForest <- function( X,
                              Phi = 256,
                              seed = 1071,
                              vanilla = FALSE,
+                             # lm = FALSE,
+                             # lm_degree = 2,
                              encode_categories = FALSE,
                              categorical_variables = NULL,
                              category_encodings_methods = NULL,
@@ -29,9 +31,18 @@ isolationForest <- function( X,
 
   forest = vector("list", n_trees)
 
-  forest <- future.apply::future_lapply(1:n_trees, function(i){
-    iTree(X[sample(1:nrow(X),Phi),], max_depth, extension_level, vanilla )
-  }, future.seed = TRUE )
+  # forest <- future.apply::future_lapply(1:n_trees, function(i){
+  #   iTree(X[sample(1:nrow(X),Phi),], max_depth, extension_level, vanilla, lm )
+  # }, future.seed = TRUE )
+
+  for(i in 1:n_trees){
+    forest[[i]] <-  iTree(
+      X[sample(1:nrow(X),Phi),],
+      max_depth,
+      extension_level, vanilla)#, lm, lm_degree )
+  }
+
+
 
   isolation_forest_object <- list( forest = forest,
                                    Phi    = Phi,
@@ -40,6 +51,7 @@ isolationForest <- function( X,
                                    n_trees = n_trees,
                                    n_variables  = ncol(X),
                                    vanilla = vanilla,
+                                   # lm = lm,
                                    parallel = parallel,
                                    future_plan = future_plan )
   class(isolation_forest_object) <- "Isolation Forest"

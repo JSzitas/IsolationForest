@@ -175,3 +175,34 @@ max_nodes <- function( max_tree_depth )
 }
 
 
+# lm_split <- function(X){
+#
+#   reg_cols <- sample( 1:ncol(X), 2)
+#   Y_smpl <- X[,reg_cols[1]]
+#   X_smpl <- X[,reg_cols[2]]
+#
+#   res <- coef( lm( Y_smpl~X_smpl - 1))
+#
+#   lm_comparison <- res * runif(1, min( X_smpl), max(X_smpl))
+#
+#   res <- unlist(X[,reg_cols[1]]) - lm_comparison
+#
+#   return(list( filter = which( res < 0),
+#                lm_var = reg_cols[1],
+#                lm_comparison = lm_comparison  ))
+#
+# }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

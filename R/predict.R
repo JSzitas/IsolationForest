@@ -1,3 +1,71 @@
+#' Path Length of a tree node (lm splitting)
+#'
+#' @description Calculate the path length of an observation through a given tree
+#'
+#' @param X The observations to use.
+#' @param Tree A given tree to take the path through.
+#' @param current_depth The current depth of the search
+#' (how many nodes we have passed in total).
+#' @param node_index The current node.
+#' @details Calculates how deep in a tree an observation has to travel before it either
+#'          * reaches a terminal node
+#'          * we reach max tree depth
+#'          using lm splitting.
+#' @return Maximal depth + a factor calculated using **c_factor**.
+#'
+#'
+
+
+path_length_lm <- function(X, Tree, current_depth = 0, node_index = 1)
+{
+  if (Tree[[1]][node_index,"Type"] == -1 ){
+    return(current_depth + c_factor(Tree[[1]][node_index,"Size"]))
+  }
+
+  ifelse(
+    (X[, Tree[[2]][current_depth+1, 1]] - Tree[[2]][current_depth+1,2]) < 0,
+    path_length_lm(X, Tree, current_depth + 1, Tree[[1]][node_index,"Left"]),
+    path_length_lm(X, Tree, current_depth + 1, Tree[[1]][node_index,"Right"]))
+}
+
+#' Path Length of a tree node (lm splitting)
+#'
+#' @description Calculate the path length of an observation through a given tree
+#'
+#' @param X The observations to use.
+#' @param Tree A given tree to take the path through.
+#' @param current_depth The current depth of the search
+#' (how many nodes we have passed in total).
+#' @param node_index The current node.
+#' @details Calculates how deep in a tree an observation has to travel before it either
+#'          * reaches a terminal node
+#'          * we reach max tree depth
+#'          using lm splitting.
+#' @return Maximal depth + a factor calculated using **c_factor**.
+#'
+#'
+
+
+path_length_residual <- function(X, Tree, current_depth = 0, node_index = 1, residual_degree)
+{
+  if (Tree[[1]][node_index,"Type"] == -1 ){
+    return(current_depth + c_factor(Tree[[1]][node_index,"Size"]))
+  }
+
+
+  fitted <- rowSums( X[, Tree[[2]][current_depth+1, 2]] %*% t(Tree[[2]][current_depth+1,
+                                                            (4:(4+residual_degree-1))]))
+
+  ifelse(
+    (abs(X[, Tree[[2]][current_depth+1, 1]] - fitted)) < Tree[[2]][current_depth+1, 3],
+    path_length_residual( X, Tree, current_depth + 1, Tree[[1]][node_index,"Left"],
+                          residual_degree),
+    path_length_residual( X, Tree, current_depth + 1, Tree[[1]][node_index,"Right"],
+                          residual_degree))
+}
+
+
+
 #' Path Length of a tree node (extended splitting)
 #'
 #' @description Calculate the path length of an observation through a given tree
@@ -107,14 +175,29 @@ predict.isolationForest <- function( object,
   # parallel tree prediction
   if( object$vanilla ){
     # vanilla
-    paths <- future.apply::future_sapply(object$forest, function(i){
+    paths <- #future.apply::future_
+    sapply(object$forest, function(i){
       path_length_vanilla(as.matrix(newdata), i)
     })
+  }
+  # else if(object$lm){
+  #   paths <- #future.apply::future_sapply
+  #   sapply(object$forest, function(i){
+  #     path_length_lm(as.matrix(newdata), i)
+  #   })
+  # }
+  else if(object$residual){
+    paths <- #future.apply::future_sapply
+      sapply(object$forest, function(i){
+        path_length_residual(as.matrix(newdata), i,
+                             residual_degree = object$residual_degree)
+      })
   }
   else{
     # parallel tree prediction
     # standard, non-vanilla
-    paths <- future.apply::future_sapply(object$forest, function(i){
+    paths <- #future.apply::future_sapply
+      sapply(object$forest, function(i){
       path_length(as.matrix(newdata), i)
     })
   }
