@@ -205,7 +205,7 @@ void recursion( const arma::uvec& index,
 }
 
 // [[Rcpp::export]]
-Rcpp::List exporter( const arma::mat& X_in, const int& ext = 10,
+Rcpp::List iTree_cpp( const arma::mat& X_in, const int& ext = 10,
                      const int& max_depth = 10,
                      const std::string& type = "vanilla"){
 
