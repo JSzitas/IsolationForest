@@ -177,9 +177,10 @@ void recursion( const arma::uvec& index,
    }
   }
 
-  if(current_depth >= max_depth || found_duplicates || index.n_elem == 1){
-    used_tree.Id_mat(node_index, 2 ) = -1;
-    used_tree.Id_mat(node_index, 3 ) = index.n_elem;
+  if(current_depth >= max_depth ||
+     found_duplicates || (index.n_elem == 1 )){
+    used_tree.Id_mat(node_index, 1 ) = -1;
+    used_tree.Id_mat(node_index, 2 ) = index.n_elem;
     return;
   }
 

@@ -119,7 +119,7 @@ path_length_vanilla <- function(X, Tree, current_depth = 0, node_index = 1)
   if (Tree[[1]][node_index,"Type"] == -1 ){
     return(current_depth + c_factor(Tree[[1]][node_index,"Size"]))
   }
-
+cat(node_index, current_depth)
   ifelse(
     ( X[,Tree[[2]][current_depth+1,1]] - Tree[[2]][current_depth+1,2] ) < 0,
     path_length_vanilla(X, Tree, current_depth + 1, Tree[[1]][node_index,"Left"]),
@@ -167,40 +167,40 @@ predict.isolationForest <- function( object,
   if(sum(unlist(is.na(newdata))) != 0){
     newdata[is.na(newdata)] <- sample(c(-1e9,1e9),1)
   }
-  if(object$parallel == TRUE){
-    future::plan( object$future_plan )
-    on.exit(future::plan("default"), add = TRUE)
-  }
+  # if(object$parallel == TRUE){
+  #   future::plan( object$future_plan )
+  #   on.exit(future::plan("default"), add = TRUE)
+  # }
 
   # parallel tree prediction
-  if( object$vanilla ){
+  # if( object$vanilla ){
     # vanilla
     paths <- #future.apply::future_
     sapply(object$forest, function(i){
       path_length_vanilla(as.matrix(newdata), i)
     })
-  }
+  # }
   # else if(object$lm){
   #   paths <- #future.apply::future_sapply
   #   sapply(object$forest, function(i){
   #     path_length_lm(as.matrix(newdata), i)
   #   })
   # }
-  else if(object$residual){
-    paths <- #future.apply::future_sapply
-      sapply(object$forest, function(i){
-        path_length_residual(as.matrix(newdata), i,
-                             residual_degree = object$residual_degree)
-      })
-  }
-  else{
-    # parallel tree prediction
-    # standard, non-vanilla
-    paths <- #future.apply::future_sapply
-      sapply(object$forest, function(i){
-      path_length(as.matrix(newdata), i)
-    })
-  }
+  # else if(object$residual){
+  #   paths <- #future.apply::future_sapply
+  #     sapply(object$forest, function(i){
+  #       path_length_residual(as.matrix(newdata), i,
+  #                            residual_degree = object$residual_degree)
+  #     })
+  # }
+  # else{
+  #   # parallel tree prediction
+  #   # standard, non-vanilla
+  #   paths <- #future.apply::future_sapply
+  #     sapply(object$forest, function(i){
+  #     path_length(as.matrix(newdata), i)
+  #   })
+  # }
   res <- 2^(-rowMeans(paths)/c_factor(object$Phi))
   if( knn_smoothed ){
     res <- Rfast::knn( xnew = as.matrix(newdata),
